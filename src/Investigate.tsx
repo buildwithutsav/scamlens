@@ -353,19 +353,33 @@ Example: Your account will be blocked. Click this link to verify your details...
           maxLength={10000}
         />
 
-        <div className="ocr-upload">
-          <div className="ocr-upload-heading">
-            <div>
-              <strong>Have a screenshot instead?</strong>
-              <p>Upload a message screenshot and extract its text locally.</p>
-            </div>
-            <span className="ocr-tag">OCR</span>
+        <section className="ocr-upload">
+          <div className="ocr-evidence-topline">
+            <span>CASE FILE 003</span>
+            <span className="ocr-tag">LOCAL OCR</span>
           </div>
 
-          <label className="ocr-file-label" htmlFor="screenshot-input">
-            <Search size={16} />
-            {imageFile ? 'Choose a different screenshot' : 'Choose screenshot'}
-          </label>
+          <div className="ocr-upload-heading">
+            <div>
+              <strong>Screenshot evidence</strong>
+              <p>Got a screenshot of the suspicious message? Bring it into the investigation.</p>
+            </div>
+            <div className="ocr-evidence-icon">
+              <Search size={21} />
+            </div>
+          </div>
+
+          <div className="ocr-intake-area">
+            <div className="ocr-intake-copy">
+              <strong>{imageFile ? 'Evidence attached' : 'Add screenshot evidence'}</strong>
+              <span>PNG, JPG, WEBP or BMP · Up to 10 MB</span>
+            </div>
+            <label className="ocr-file-label" htmlFor="screenshot-input">
+              <Search size={16} />
+              {imageFile ? 'Replace screenshot' : 'Browse files'}
+            </label>
+          </div>
+
           <input
             id="screenshot-input"
             className="ocr-file-input"
@@ -391,8 +405,11 @@ Example: Your account will be blocked. Click this link to verify your details...
 
           {imagePreview && (
             <div className="ocr-preview-wrap">
-              <img className="ocr-preview" src={imagePreview} alt="Screenshot selected for text extraction" />
-              <span>{imageFile?.name}</span>
+              <img className="ocr-preview" src={imagePreview} alt="Selected screenshot evidence" />
+              <div className="ocr-preview-details">
+                <strong>Evidence ready</strong>
+                <span>{imageFile?.name}</span>
+              </div>
             </div>
           )}
 
@@ -418,12 +435,13 @@ Example: Your account will be blocked. Click this link to verify your details...
             disabled={!imageFile || ocrBusy}
           >
             <Search size={16} />
-            {ocrBusy ? 'Extracting text...' : 'Extract text from screenshot'}
+            {ocrBusy ? 'Extracting text...' : 'Extract evidence text'}
           </button>
+
           <p className="ocr-disclaimer">
-            English OCR only for now. Text recognition can make mistakes—check the extracted message before analysing it.
+            Processed locally in your browser. OCR supports English and can make mistakes—review the extracted message before analysing it.
           </p>
-        </div>
+        </section>
 
         <div className="investigate-input-footer">
           <span>{message.length.toLocaleString()} / 10,000 characters</span>
