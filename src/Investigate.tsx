@@ -230,7 +230,15 @@ export default function Investigate() {
         domain => host === domain || host.endsWith(`.${domain}`)
       )
 
-      if (host.includes(brand.token) && !legitimateDomain) {
+      const hasBrandLikeLabel = host.split('.').some(label =>
+        label === brand.token ||
+        label.startsWith(`${brand.token}-`) ||
+        label.endsWith(`-${brand.token}`) ||
+        label.includes(`${brand.token}-`) ||
+        label.includes(`-${brand.token}`)
+      )
+
+      if (hasBrandLikeLabel && !legitimateDomain) {
         add(
           `Possible ${brand.name} impersonation`,
           `The hostname contains "${brand.name}" but does not use one of the recognised domains in this basic check. This may be an attempt to imitate the brand.`,
@@ -276,14 +284,6 @@ export default function Investigate() {
       )
     }
 
-    if (found.length === 0) {
-      add(
-        'No matching URL warning patterns',
-        'The current checks did not find these known warning patterns. This does not establish that the domain is genuine, safe or free from malware.',
-        'medium',
-        'link'
-      )
-    }
 
     setUrlResult({ host, signals: found })
   }
@@ -506,40 +506,88 @@ Example: Your account will be blocked. Click this link to verify your details...
 
         {urlResult && (
           <div className="url-result" aria-live="polite">
-            <div className="url-host">
-              <span className="section-kicker">DESTINATION HOSTNAME</span>
-              <strong>{urlResult.host}</strong>
-            </div>
-            <div className="signals-heading">
-              <div>
-                <span className="section-kicker">URL EVIDENCE</span>
-                <h3>{urlResult.signals.length} checks to review</h3>
-              </div>
-              <span className="rule-label">Local rule-based checks</span>
-            </div>
-            <div className="signals-list">
-              {urlResult.signals.map((signal, index) => (
-                <article className="signal-card" key={`${signal.title}-${index}`}>
-                  <div className={`signal-icon signal-${signal.severity}`}>
-                    <SignalIcon type={signal.icon} />
-                  </div>
-                  <div className="signal-copy">
-                    <div className="signal-title-row">
-                      <h4>{signal.title}</h4>
-                      <span className={`signal-tag tag-${signal.severity}`}>
-                        {signal.title === 'No matching URL warning patterns'
-                          ? 'NO MATCH'
-                          : signal.severity === 'high' ? 'HIGH CONCERN' : 'CAUTION'}
-                      </span>
+            {(() => {
+              const high = urlResult.signals.some(signal => signal.severity === 'high')
+              const caution = urlResult.signals.length > 0 && !high
+
+              return (
+                <>
+                  <div className={`url-verdict ${high ? 'url-verdict-high' : caution ? 'url-verdict-caution' : 'url-verdict-clear'}`}>
+                    <span className="section-kicker">DOMAIN INSPECTION / COMPLETE</span>
+                    <div className="url-verdict-main">
+                      <div className="url-verdict-icon">
+                        {high ? <ShieldAlert size={22} /> : caution ? <AlertTriangle size={22} /> : <Search size={22} />}
+                      </div>
+                      <div>
+                        <h3>{high ? 'High-concern patterns found' : caution ? 'Some patterns need a closer look' : 'No matching warning patterns'}</h3>
+                        <p>
+                          {high
+                            ? 'This address contains patterns commonly associated with deceptive links. Avoid entering information.'
+                            : caution
+                              ? 'Some URL characteristics deserve attention. Verify the destination independently.'
+                              : 'The current checks did not match known warning patterns. This does not confirm that the website is safe.'}
+                        </p>
+                      </div>
                     </div>
-                    <p>{signal.explanation}</p>
+                    <div className="url-verdict-meta">
+                      <span>{urlResult.signals.length} {urlResult.signals.length === 1 ? 'finding' : 'findings'}</span>
+                      <span>LOCAL RULE-BASED CHECK</span>
+                    </div>
                   </div>
-                </article>
-              ))}
-            </div>
-            <p className="url-limit-note">
-              These checks inspect URL structure only. They do not query threat-intelligence databases, check website ownership, or guarantee safety.
-            </p>
+
+                  <div className="url-host">
+                    <div className="url-host-top">
+                      <span className="section-kicker">DESTINATION HOSTNAME</span>
+                      <span className="url-protocol-tag">URL PARSED</span>
+                    </div>
+                    <strong>{urlResult.host}</strong>
+                    <p>Hostname extracted from the address you entered</p>
+                  </div>
+
+                  <div className="url-evidence-heading">
+                    <div>
+                      <span className="section-kicker">INVESTIGATION NOTES</span>
+                      <h3>{urlResult.signals.length ? 'Patterns detected' : 'No matching clues'}</h3>
+                    </div>
+                    <span className="rule-label">STRUCTURE ANALYSIS</span>
+                  </div>
+
+                  {urlResult.signals.length > 0 ? (
+                    <div className="url-evidence-list">
+                      {urlResult.signals.map((signal, index) => (
+                        <article className="url-evidence-card" key={`${signal.title}-${index}`}>
+                          <div className={`signal-icon signal-${signal.severity}`}>
+                            <SignalIcon type={signal.icon} />
+                          </div>
+                          <div className="signal-copy">
+                            <div className="signal-title-row">
+                              <h4>{signal.title}</h4>
+                              <span className={`signal-tag tag-${signal.severity}`}>
+                                {signal.severity === 'high' ? 'HIGH CONCERN' : 'CAUTION'}
+                              </span>
+                            </div>
+                            <p>{signal.explanation}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="url-no-findings">
+                      <Search size={21} />
+                      <div>
+                        <strong>Nothing matched this rule set</strong>
+                        <p>A newly created scam domain or a convincing imitation may not trigger these checks.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="url-limit-note">
+                    <ShieldCheck size={16} />
+                    <p>These checks inspect URL structure only. They do not contact the website, check its ownership, query live threat-intelligence databases, or guarantee safety. HTTPS is not proof of legitimacy.</p>
+                  </div>
+                </>
+              )
+            })()}
           </div>
         )}
       </section>
