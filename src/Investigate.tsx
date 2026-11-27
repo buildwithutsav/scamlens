@@ -328,7 +328,8 @@ export default function Investigate() {
         <div className="investigate-heading-icon"><Search size={25} /></div>
       </div>
 
-      <section className="investigate-panel">
+      <section className="investigate-panel message-investigate-panel">
+        <div className="case-file-stamp">CASE FILE 001 <span>MESSAGE EVIDENCE</span></div>
         <div className="investigate-panel-title">
           <div className="investigate-panel-icon"><ShieldAlert size={20} /></div>
           <div>
@@ -545,9 +546,9 @@ Example: Your account will be blocked. Click this link to verify your details...
 
       {analysed && signals && (
         <section className="investigation-result" aria-live="polite">
-          <div className={`result-banner ${highCount ? 'result-high' : mediumCount ? 'result-medium' : 'result-low'}`}>
+          <div className={`result-banner ${highCount ? 'result-high' : mediumCount ? 'result-medium' : 'result-unknown'}`}>
             <div className="result-banner-icon">
-              {highCount ? <ShieldAlert size={23} /> : mediumCount ? <AlertTriangle size={23} /> : <ShieldCheck size={23} />}
+              {highCount ? <ShieldAlert size={23} /> : mediumCount ? <AlertTriangle size={23} /> : <Search size={23} />}
             </div>
             <div>
               <span className="section-kicker">INVESTIGATION SUMMARY</span>
@@ -591,7 +592,7 @@ Example: Your account will be blocked. Click this link to verify your details...
             </div>
           ) : (
             <div className="no-signals">
-              <ShieldCheck size={22} />
+              <Search size={22} />
               <p>No patterns from the current rule set matched this message. New scam techniques may not be detected.</p>
             </div>
           )}

@@ -249,3 +249,261 @@
 @media (max-width: 650px) {
   .ocr-upload { padding: 13px; }
 }
+
+/* ==================================================
+   SCAMLENS — MESSAGE INVESTIGATION CASE FILE
+   ================================================== */
+
+.message-investigate-panel {
+  position: relative;
+  overflow: hidden;
+  background: #fffdf9;
+  border: 1px solid #eadfd7;
+  box-shadow: 0 5px 18px #49352b0a, 0 1px 3px #49352b08;
+}
+
+.message-investigate-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: linear-gradient(90deg, #e8a2ae 0 34%, #eecb78 34% 66%, #b8a3d8 66%);
+}
+
+.case-file-stamp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 19px;
+  padding-bottom: 11px;
+  border-bottom: 1px dashed #e8dcd2;
+  color: #a56f84;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+}
+
+.case-file-stamp span {
+  color: #a69a8d;
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+.message-investigate-panel .investigate-panel-icon {
+  color: #9c6078;
+  background: #f9e5e9;
+  border: 1px solid #f0d3da;
+}
+
+.message-investigate-panel textarea {
+  min-height: 205px;
+  border: 1px solid #e6d9d2;
+  border-radius: 15px;
+  background-color: #fffaf4;
+  background-image: linear-gradient(#fffaf4 31px, #f1e9e2 32px);
+  background-size: 100% 32px;
+  line-height: 32px;
+  padding: 10px 15px;
+  font-size: 13px;
+}
+
+.message-investigate-panel textarea:focus {
+  border-color: #c69bb0;
+  box-shadow: 0 0 0 3px #f8eaf0;
+}
+
+.message-investigate-panel .analyse-button {
+  min-height: 44px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: #302a33;
+  box-shadow: 0 4px 0 #e5cbd1;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.message-investigate-panel .analyse-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #e5cbd1;
+}
+
+.message-investigate-panel .example-button {
+  color: #9b647d;
+}
+
+/* Investigation result states */
+
+.investigation-result {
+  border-color: #eadfdc;
+  box-shadow: 0 6px 22px #49352b0b;
+}
+
+.result-banner {
+  padding: 21px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+}
+
+.result-high {
+  background: #fff0ed;
+  border-color: #f4d2ca;
+}
+
+.result-medium {
+  background: #fff7e8;
+  border-color: #f0dfb8;
+}
+
+.result-unknown {
+  background: #f3eff9;
+  border-color: #e3d9f0;
+  color: #76628f;
+}
+
+.result-unknown .result-banner-icon {
+  color: #806b9c;
+  background: #fff;
+}
+
+.result-unknown .result-banner h2 {
+  color: #51435f;
+}
+
+.result-unknown .result-banner p {
+  color: #81758e;
+}
+
+.result-counts > div {
+  min-height: 83px;
+  justify-content: center;
+  border-radius: 13px;
+  background: #fffdf9;
+  border-color: #eee6df;
+}
+
+.result-counts strong {
+  font-size: 25px;
+  letter-spacing: -.7px;
+}
+
+.signals-heading {
+  padding-top: 4px;
+}
+
+.signals-heading h3 {
+  font-size: 18px;
+  letter-spacing: -.3px;
+}
+
+.rule-label {
+  font-weight: 700;
+}
+
+.signals-list {
+  gap: 12px;
+}
+
+.signal-card {
+  position: relative;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fffdfa;
+  border-color: #eee6df;
+  box-shadow: 0 2px 5px #49352b06;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.signal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 13px #49352b0c;
+}
+
+.signal-high {
+  background: #fff9f7;
+  color: #bd6256;
+}
+
+.signal-medium {
+  background: #fffcf5;
+  color: #a77d37;
+}
+
+.signal-title-row h4 {
+  font-size: 13px;
+  letter-spacing: -.15px;
+}
+
+.signal-copy p {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #817782;
+}
+
+.signal-tag {
+  padding: 6px 9px;
+  letter-spacing: .6px;
+}
+
+.no-signals {
+  background: #f5f1fa;
+  border: 1px solid #e7dff0;
+  color: #806b98;
+  align-items: flex-start;
+  padding: 17px;
+}
+
+.no-signals p {
+  color: #756b80;
+  font-size: 12px;
+}
+
+.safety-advice {
+  background: #fbf7ff;
+  border-color: #e9e0f2;
+  padding: 19px;
+}
+
+.safety-advice ul {
+  font-size: 11px;
+  line-height: 2;
+}
+
+.scan-again-button {
+  min-height: 42px;
+  border-radius: 11px;
+  box-shadow: 0 3px 0 #e4cbd1;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.scan-again-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 #e4cbd1;
+}
+
+@media (max-width: 650px) {
+  .case-file-stamp {
+    font-size: 8px;
+  }
+
+  .message-investigate-panel textarea {
+    min-height: 175px;
+    font-size: 12px;
+  }
+
+  .result-banner {
+    padding: 15px;
+  }
+
+  .result-counts > div {
+    min-height: 72px;
+  }
+
+  .result-counts strong {
+    font-size: 21px;
+  }
+
+  .signal-card {
+    padding: 13px;
+  }
+}
