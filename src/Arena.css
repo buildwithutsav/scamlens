@@ -4066,3 +4066,66 @@
     font-size: 8px;
   }
 }
+
+/* CLASSIFY — clear visual answer feedback */
+.arena-mode-classify .arena-choices button.chosen {
+  transform: translateY(-3px);
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+  opacity: 1;
+}
+
+.arena-mode-classify .arena-choices button.chosen.correct-choice {
+  border-color: #57936b;
+  background: #e8f5e9;
+  color: #285c39;
+  box-shadow: 0 4px 0 #57936b;
+}
+
+.arena-mode-classify .arena-choices button.chosen.incorrect-choice {
+  border-color: #d66d79;
+  background: #fff0f1;
+  color: #923d4b;
+  box-shadow: 0 4px 0 #d66d79;
+}
+
+/* Mode-specific case progression */
+.arena-game-classify .arena-card-footer .arena-primary {
+  border-radius: 12px;
+  background: #302827;
+  box-shadow: 0 3px 0 #d9b7b7;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.arena-game-classify .arena-card-footer .arena-primary:hover {
+  background: #51403e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 #d9b7b7;
+}
+
+.arena-game-redflags .arena-card-footer {
+  padding: 15px 17px;
+  border: 1px dashed #b99b79;
+  border-radius: 7px;
+  background: #fffaf0;
+}
+
+.arena-game-redflags .arena-card-footer .arena-primary {
+  border: 1px solid #302a26;
+  border-radius: 5px;
+  background: #765b43;
+  box-shadow: 3px 3px 0 #d4c0a4;
+  letter-spacing: .02em;
+}
+
+.arena-game-redflags .arena-card-footer .arena-primary:hover {
+  background: #5f4937;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #d4c0a4;
+}
+
+@media (max-width: 520px) {
+  .arena-game-redflags .arena-card-footer {
+    gap: 12px;
+    padding: 12px;
+  }
+}

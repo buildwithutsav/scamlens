@@ -680,12 +680,24 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
                 : <><Lightbulb size={19} /> What's your call, detective?</>}
             </div>
             <div className={mode === 'timed' ? 'arena-choices sprint-choices' : 'arena-choices'}>
-              <button disabled={answer !== null} onClick={() => choose('Scam')}>
+              <button
+                className={answer === 'Scam'
+                  ? current.type === 'Scam' ? 'chosen correct-choice' : 'chosen incorrect-choice'
+                  : ''}
+                disabled={answer !== null}
+                onClick={() => choose('Scam')}
+              >
                 <ShieldAlert size={22} />
                 <strong>SCAM!</strong>
                 <small>Suspicious message</small>
               </button>
-              <button disabled={answer !== null} onClick={() => choose('Safe')}>
+              <button
+                className={answer === 'Safe'
+                  ? current.type === 'Safe' ? 'chosen correct-choice' : 'chosen incorrect-choice'
+                  : ''}
+                disabled={answer !== null}
+                onClick={() => choose('Safe')}
+              >
                 <ShieldCheck size={22} />
                 <strong>SAFE!</strong>
                 <small>No clear warning signs</small>
