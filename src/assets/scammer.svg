@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440">
+  <defs>
+    <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d87960"/>
+      <stop offset="1" stop-color="#984638"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0.8" y2="1">
+      <stop stop-color="#ffd0c4"/>
+      <stop offset="1" stop-color="#e9959c"/>
+    </linearGradient>
+    <linearGradient id="case" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffe18a"/>
+      <stop offset="1" stop-color="#d9a83e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft character shadow -->
+  <ellipse cx="211" cy="418" rx="145" ry="13" fill="#6c4140" opacity=".12"/>
+
+  <!-- Back hair -->
+  <path d="M112 151 Q75 91 111 52 Q137 13 180 39 Q224 1 263 39 Q322 30 333 91 Q347 133 308 171Z"
+        fill="#f9f5ee" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Neck -->
+  <path d="M166 207 L161 259 Q205 287 248 253 L231 203Z"
+        fill="url(#skin)" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Jacket body -->
+  <path d="M157 239 Q111 245 84 288 Q54 338 47 421 L370 421 Q359 326 322 278 Q292 244 241 236 L207 294Z"
+        fill="url(#jacket)" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Shirt -->
+  <path d="M164 238 L207 286 L246 238 L281 421 L126 421Z"
+        fill="#fffaf0" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Shirt stripes -->
+  <path d="M145 306 L267 306 M137 337 L273 337 M132 369 L278 369 M129 400 L282 400"
+        fill="none" stroke="#b95d50" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Jacket lapels -->
+  <path d="M157 238 L207 286 L176 341 L133 270Z"
+        fill="#e68a70" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M246 238 L207 286 L248 339 L280 270Z"
+        fill="#c45d4d" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Face -->
+  <path d="M126 103 Q141 53 205 51 Q275 49 294 105 L286 169 Q276 222 210 239 Q145 223 129 171Z"
+        fill="url(#skin)" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Hair fringe -->
+  <path d="M119 115 Q98 67 137 42 Q163 24 188 45 Q211 17 244 39 Q286 39 307 79 Q286 71 267 86 Q240 65 221 89 Q190 65 164 96 Q142 87 119 115Z"
+        fill="#fffaf0" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M143 57 Q163 39 181 54 M224 48 Q252 39 272 62"
+        fill="none" stroke="#d1c9c4" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Clean, serious black mask -->
+  <path d="M120 117 Q204 91 298 118 L286 166 Q207 180 132 164Z"
+        fill="#292323" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Narrow, serious eye openings -->
+  <path d="M153 137 L188 137 M228 137 L265 137"
+        fill="none" stroke="#fffaf0" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="174" cy="139" rx="4" ry="5" fill="#fffaf0"/>
+  <ellipse cx="247" cy="139" rx="4" ry="5" fill="#fffaf0"/>
+
+  <!-- Ear details -->
+  <path d="M127 143 Q107 128 108 153 Q111 173 132 174 M289 143 Q310 129 310 153 Q307 173 286 174"
+        fill="#f3a6aa" stroke="#292323" stroke-width="6"/>
+
+  <!-- Arm holding briefcase -->
+  <path d="M282 278 Q323 267 344 309 L326 357 Q298 352 268 319Z"
+        fill="#b95743" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Hand -->
+  <path d="M315 337 Q329 319 349 330 Q365 341 355 359 Q344 375 323 365Z"
+        fill="url(#skin)" stroke="#292323" stroke-width="7"/>
+
+  <!-- Briefcase -->
+  <path d="M258 340 L357 318 Q370 316 374 331 L395 397 Q399 412 384 416 L285 435 Q271 437 267 421Z"
+        fill="url(#case)" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Briefcase handle -->
+  <path d="M298 337 L291 315 Q288 304 301 301 L332 294 Q344 291 347 304 L351 324"
+        fill="none" stroke="#292323" stroke-width="9" stroke-linecap="round"/>
+  <path d="M305 329 L299 313 L338 304 L343 321"
+        fill="none" stroke="#fff0bb" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Briefcase lock and details -->
+  <path d="M326 359 L351 353 L358 379 L333 385Z"
+        fill="#fff3d1" stroke="#292323" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="343" cy="369" r="4" fill="#292323"/>
+  <path d="M285 402 L378 382" stroke="#b9852e" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Small jacket buttons -->
+  <circle cx="238" cy="354" r="5" fill="#f6d27a" stroke="#292323" stroke-width="3"/>
+  <circle cx="245" cy="385" r="5" fill="#f6d27a" stroke="#292323" stroke-width="3"/>
+
+  <!-- Character accent -->
+  <path d="M76 91 L65 81 M342 111 L356 104"
+        stroke="#d9878c" stroke-width="7" stroke-linecap="round"/>
+</svg>

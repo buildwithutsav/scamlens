@@ -4,11 +4,16 @@ import {
   CheckCircle2, XCircle, ArrowRight, RotateCcw,
   Lightbulb, Target, Search
 } from 'lucide-react'
+import scammerCharacter from './assets/scammer.svg'
+import detectiveCharacter from './assets/detective.svg'
 import './Arena.css'
 
 type Case = {
   type: 'Scam' | 'Safe'
   category: string
+  incident: string
+  briefing: string
+  riskLevel: 'LOW' | 'MODERATE' | 'HIGH'
   sender: string
   title: string
   message: string
@@ -23,6 +28,9 @@ const cases: Case[] = [
   {
     type: 'Scam',
     category: 'BANKING',
+    incident: 'Suspected account takeover',
+    briefing: 'A sender threatens to block a bank account unless the recipient follows an unexpected link and shares a one-time password.',
+    riskLevel: 'HIGH',
     sender: 'Unknown number · SMS',
     title: 'Your account is on hold',
     message: 'URGENT: Your bank account will be blocked today. Complete KYC immediately using this link. Share your OTP with our executive to verify.',
@@ -35,6 +43,9 @@ const cases: Case[] = [
   {
     type: 'Safe',
     category: 'ACCOUNT SECURITY',
+    incident: 'Routine transaction verification',
+    briefing: 'A transaction alert asks the recipient to check an unfamiliar charge through their own banking app or the number printed on their card.',
+    riskLevel: 'LOW',
     sender: 'Bank · App notification',
     title: 'A transaction alert',
     message: 'You spent ₹450 using your debit card today. If you do not recognise this transaction, open your bank app directly or call the number printed on your card.',
@@ -47,6 +58,9 @@ const cases: Case[] = [
   {
     type: 'Scam',
     category: 'JOB FRAUD',
+    incident: 'Suspicious recruitment offer',
+    briefing: 'A recruiter promises unusually high daily earnings without an interview and requests an upfront registration payment.',
+    riskLevel: 'HIGH',
     sender: 'Recruitment Desk · WhatsApp',
     title: 'A job offer that pays first',
     message: 'Congratulations! Earn ₹3,500 daily from home. No interview needed. Pay a refundable ₹1,999 registration fee today to activate your employee ID.',
@@ -59,6 +73,9 @@ const cases: Case[] = [
   {
     type: 'Safe',
     category: 'DIGITAL PAYMENTS',
+    incident: 'Unexpected UPI credit',
+    briefing: 'A payment notification claims money has arrived. Verify whether the credit appears in the recipient’s own payment app, without requesting a PIN.',
+    riskLevel: 'LOW',
     sender: 'UPI app',
     title: 'You receive a payment',
     message: 'Your UPI app shows that ₹800 has been received. You check the transaction inside the app and see the credit in your account balance.',
@@ -71,6 +88,9 @@ const cases: Case[] = [
   {
     type: 'Scam',
     category: 'PRIZE FRAUD',
+    incident: 'Advance-fee prize claim',
+    briefing: 'An unexpected prize announcement demands processing charges under a tight deadline before the supposed reward can be claimed.',
+    riskLevel: 'HIGH',
     sender: 'Lucky Rewards · SMS',
     title: 'You won a surprise prize',
     message: 'You have won ₹5,00,000! Pay ₹4,999 processing charges within two hours to claim your prize. Reply with your details now.',
@@ -83,6 +103,9 @@ const cases: Case[] = [
   {
     type: 'Safe',
     category: 'PASSWORD SAFETY',
+    incident: 'Two-factor authentication reminder',
+    briefing: 'A password manager recommends stronger account protection and directs the recipient to open the app independently.',
+    riskLevel: 'LOW',
     sender: 'Password manager · App notification',
     title: 'A security reminder',
     message: 'Your password manager recommends enabling two-factor authentication. Open the password manager app from your device to review this recommendation.',
@@ -99,6 +122,7 @@ type Mode = 'classify' | 'redflags' | 'timed'
 function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number; correct: number; xp: number }) => number }) {
   const xpAwarded = useRef(false)
   const [mode, setMode] = useState<Mode>('classify')
+  const [selectedMode, setSelectedMode] = useState<Mode | null>(null)
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState<(string | null)[]>(Array(6).fill(null))
   const [selectedFlags, setSelectedFlags] = useState<string[]>([])
@@ -123,6 +147,7 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
   function resetRound(nextMode: Mode = mode) {
     xpAwarded.current = false
     setMode(nextMode)
+    setSelectedMode(nextMode)
     setIndex(0)
     setAnswers(Array(6).fill(null))
     setSelectedFlags([])
@@ -131,7 +156,7 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
     setFinished(false)
     setTotalAwardedXP(0)
     setSecondsLeft(30)
-    setTimerStarted(nextMode === 'timed')
+    setTimerStarted(false)
   }
 
   function choose(value: 'Scam' | 'Safe') {
@@ -212,6 +237,12 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
     resetRound(mode)
   }
 
+  function backToBoard() {
+    setSelectedMode(null)
+    setFinished(false)
+    setTimerStarted(false)
+  }
+
   function renderFlagMessage(): ReactNode[] {
     const phrases: string[] = [...current.flags, ...current.decoys]
     phrases.sort(
@@ -230,14 +261,18 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
       }
 
       const selected = selectedFlags.includes(phrase)
-      const isRealFlag = current.flags.some(item => item === phrase)
-      const revealed = flagSubmitted && isRealFlag
+      const isRealFlag = current.flags.includes(phrase)
+      const resultClass = flagSubmitted
+        ? isRealFlag
+          ? selected ? 'revealed' : 'missed'
+          : selected ? 'false-alarm' : ''
+        : selected ? 'selected' : ''
 
       segments.push(
         <button
           key={`${index}-${i}`}
           type="button"
-          className={`arena-flag ${selected ? 'selected' : ''} ${revealed ? 'revealed' : ''}`}
+          className={`arena-flag ${resultClass}`}
           onClick={() => toggleFlag(phrase)}
           disabled={flagSubmitted}
           aria-pressed={selected}
@@ -253,6 +288,71 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
     }
 
     return segments
+  }
+
+
+  if (selectedMode === null) {
+    return (
+      <section className="arena-page arena-board">
+        <div className="arena-board-hero">
+          <div className="arena-board-copy">
+            <span className="arena-kicker"><Swords size={15} /> THE DETECTIVE CLUB · TRAINING HQ</span>
+            <h1>Your next case<br />starts here.</h1>
+            <p>Every message leaves clues. Examine the evidence, trust your instincts, and stop the scam before it strikes.</p>
+            <div className="arena-board-stamp"><ShieldCheck size={16} /> 3 TRAINING MISSIONS AVAILABLE</div>
+          </div>
+          <div className="arena-board-mascot" aria-label="Detective mascot">
+            <img src={detectiveCharacter} alt="ScamLens cartoon detective holding a magnifying glass" />
+          </div>
+          <div className="arena-board-doodle" aria-hidden="true">?</div>
+        </div>
+
+        <div className="arena-board-section-heading">
+          <div>
+            <span className="arena-kicker">YOUR CASE FILES</span>
+            <h2>Choose your investigation</h2>
+          </div>
+          <span className="arena-board-count">03 MISSIONS</span>
+        </div>
+
+        <div className="arena-missions">
+          <button className="arena-mission mission-pink" onClick={() => resetRound('classify')}>
+            <span className="arena-mission-number">CASE 01</span>
+            <span className="arena-mission-art"><ShieldAlert size={43} /></span>
+            <span className="arena-mission-tag">BEGINNER · 6 CASES</span>
+            <strong>Scam or Safe?</strong>
+            <span className="arena-mission-description">Can you tell a genuine message from a clever trap?</span>
+            <span className="arena-mission-cta">Start investigating <ArrowRight size={16} /></span>
+          </button>
+
+          <button className="arena-mission mission-yellow" onClick={() => resetRound('redflags')}>
+            <span className="arena-mission-number">CASE 02</span>
+            <span className="arena-mission-art"><Target size={43} /></span>
+            <span className="arena-mission-tag">OBSERVATION · 6 CASES</span>
+            <strong>Find the Red Flags</strong>
+            <span className="arena-mission-description">Inspect suspicious messages and uncover every warning sign.</span>
+            <span className="arena-mission-cta">Examine the evidence <ArrowRight size={16} /></span>
+          </button>
+
+          <button className="arena-mission mission-lavender" onClick={() => resetRound('timed')}>
+            <span className="arena-mission-number">CASE 03</span>
+            <span className="arena-mission-art"><Zap size={43} /></span>
+            <span className="arena-mission-tag">TIME ATTACK · 30 SECONDS</span>
+            <strong>30-Second Sprint</strong>
+            <span className="arena-mission-description">Six quick decisions. The clock is ticking. Stay sharp.</span>
+            <span className="arena-mission-cta">Beat the clock <ArrowRight size={16} /></span>
+          </button>
+        </div>
+
+        <div className="arena-board-tip">
+          <span className="arena-board-tip-icon"><Lightbulb size={21} /></span>
+          <div>
+            <strong>Detective's reminder</strong>
+            <p>Real organisations won't ask you to share an OTP, UPI PIN, or password. When in doubt, verify independently.</p>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   if (finished) {
@@ -271,6 +371,15 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
         </div>
 
         <div className="arena-result">
+          <div className="arena-character-wrap">
+            <span className="arena-scene-stamp">SUSPECT IDENTIFIED</span>
+            <div className="arena-scammer-speech">You caught me!</div>
+            <img
+              className="arena-scammer-art"
+              src={scammerCharacter}
+              alt="Cartoon scammer holding a suspicious briefcase"
+            />
+          </div>
           <Trophy size={36} />
           <h2>{finalScore}<span> / 6</span></h2>
           <p>{mode === 'redflags'
@@ -293,6 +402,9 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
           <button className="arena-primary" onClick={restart}>
             <RotateCcw size={16} /> Play again
           </button>
+          <button className="arena-back-button arena-result-back" onClick={backToBoard}>
+            <ArrowRight size={15} /> Back to case board
+          </button>
         </div>
 
         <div className="arena-review">
@@ -303,18 +415,34 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
               : answers[i] === item.type
 
             return (
-              <div className="arena-review-row" key={i}>
-                {correct
-                  ? <CheckCircle2 color="#659775" />
-                  : <XCircle color="#c46e70" />}
-                <div>
-                  <strong>{item.title}</strong>
+              <div
+                className={`arena-review-row ${correct ? 'is-correct' : 'is-incorrect'}`}
+                key={i}
+              >
+                <span className="arena-review-number">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <div className="arena-review-copy">
+                  <div className="arena-review-title">
+                    <strong>{item.title}</strong>
+                    <span className={`arena-review-status ${correct ? 'solved' : 'missed'}`}>
+                      {correct ? 'CASE SOLVED' : 'MISSED'}
+                    </span>
+                  </div>
+
                   <p>{mode !== 'redflags'
                     ? `Your answer: ${answers[i] ?? 'Not answered'} · Correct: ${item.type}`
                     : flagAnswers[i] === true
-                      ? 'All red flags identified'
+                      ? 'You identified every suspicious phrase'
                       : 'Some red flags were missed or incorrectly selected'}</p>
                 </div>
+
+                <span className="arena-review-icon">
+                  {correct
+                    ? <CheckCircle2 size={20} />
+                    : <XCircle size={20} />}
+                </span>
               </div>
             )
           })}
@@ -323,8 +451,54 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
     )
   }
 
+  if (mode === 'timed' && !timerStarted) {
+    return (
+      <section className="arena-page sprint-intro-page">
+        <button className="arena-back-button" onClick={backToBoard}>
+          <ArrowRight size={15} /> Back to case board
+        </button>
+
+        <div className="sprint-intro">
+          <div className="sprint-intro-topline">
+            <span><Zap size={15} /> SCAMLENS ARCADE</span>
+            <span>CHALLENGE 03</span>
+          </div>
+
+          <div className="sprint-intro-art">
+            <div className="sprint-intro-orbit sprint-orbit-one" />
+            <div className="sprint-intro-orbit sprint-orbit-two" />
+            <img src={detectiveCharacter} alt="ScamLens detective ready for the challenge" />
+            <span className="sprint-intro-burst">30<br />SEC</span>
+          </div>
+
+          <span className="sprint-intro-kicker">READY, DETECTIVE?</span>
+          <h1>LIGHTNING<br /><span>ROUND.</span></h1>
+          <p className="sprint-intro-description">
+            Six messages. One ticking clock. Trust your instincts and make every second count.
+          </p>
+
+          <div className="sprint-rules">
+            <div><strong>06</strong><span>CASES</span></div>
+            <div><strong>30s</strong><span>ON THE CLOCK</span></div>
+            <div><strong>+20</strong><span>XP / CORRECT</span></div>
+          </div>
+
+          <button className="sprint-start-button" onClick={() => setTimerStarted(true)}>
+            <Zap size={20} /> START SPRINT <ArrowRight size={19} />
+          </button>
+          <span className="sprint-intro-footnote">
+            <ShieldCheck size={14} /> The timer begins when you press start.
+          </span>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <section className="arena-page">
+    <section className={`arena-page arena-mode-${mode}`}>
+      <button className="arena-back-button" onClick={backToBoard}>
+        <ArrowRight size={15} /> Back to case board
+      </button>
       <div className="arena-heading">
         <span className="arena-kicker"><Swords size={15} /> DETECTIVE TRAINING GROUND</span>
         <h1>Trust the clues. Not the message.</h1>
@@ -367,9 +541,16 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
       </div>
 
       {mode === 'timed' && (
-        <div className={`arena-timer ${secondsLeft <= 10 ? 'urgent' : ''}`}>
-          <span><Zap size={18} /> TIME LEFT</span>
-          <strong>00:{String(secondsLeft).padStart(2, '0')}</strong>
+        <div className="sprint-hud">
+          <div className={`arena-timer ${secondsLeft <= 10 ? 'urgent' : ''}`}>
+            <span><Zap size={18} /> TIME LEFT</span>
+            <strong>00:{String(secondsLeft).padStart(2, '0')}</strong>
+          </div>
+          <div className="sprint-scoreboard">
+            <span>YOUR SCORE</span>
+            <strong>{score}<small> / 6</small></strong>
+            <em>{score * 20} XP EARNED</em>
+          </div>
         </div>
       )}
 
@@ -381,66 +562,270 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
         <div style={{ width: `${(index + (completed ? 1 : 0)) / 6 * 100}%` }} />
       </div>
 
-      <article className="arena-case">
+      <article className={`arena-case arena-game-shell arena-game-${mode}`}>
+        {mode === 'classify' && (
+          <div className="arena-phone-header">
+            <strong>Question {index + 1} <span>of 6</span></strong>
+            <span className="arena-phone-label">SCAMLENS CASE</span>
+          </div>
+        )}
+        <div className={mode === 'classify'
+          ? 'arena-phone-screen arena-screen-classify'
+          : mode === 'redflags'
+            ? 'investigation-room'
+            : 'sprint-arena'
+        }>
+        {mode === 'timed' && (
+          <div className="sprint-round-banner">
+            <span className="sprint-round-icon"><Zap size={19} /></span>
+            <div>
+              <strong>LIGHTNING ROUND</strong>
+              <small>Trust your instincts. Decide fast.</small>
+            </div>
+            <span className="sprint-round-number">ROUND {index + 1}/6</span>
+          </div>
+        )}
+
         <div className="arena-case-top">
-          <span>{current.category}</span>
-          <small>CASE #{String(index + 1).padStart(2, '0')}</small>
+          <span className="arena-case-category">{current.category}</span>
+          <small><span className="arena-case-file-dot" /> CASE FILE #{String(index + 1).padStart(2, '0')}</small>
         </div>
-        <p className="arena-sender">{current.sender}</p>
+        {mode === 'redflags' && (
+          <div className="investigation-steps">
+            <div className="investigation-step active">
+              <span>01</span>
+              <strong>Inspect</strong>
+            </div>
+            <div className="investigation-step-line" />
+            <div className={`investigation-step ${selectedFlags.length > 0 ? 'active' : ''}`}>
+              <span>02</span>
+              <strong>Collect</strong>
+            </div>
+            <div className="investigation-step-line" />
+            <div className={`investigation-step ${flagSubmitted ? 'active' : ''}`}>
+              <span>03</span>
+              <strong>Report</strong>
+            </div>
+          </div>
+        )}
+
+        <div className="investigation-workspace">
+          <aside className="investigation-panel dossier-panel">
+        {mode === 'redflags' && (
+          <section className="case-briefing">
+            <div className="case-briefing-top">
+              <span><Search size={14} /> INVESTIGATION BRIEFING</span>
+              <span className={`case-difficulty risk-${current.riskLevel.toLowerCase()}`}>{current.riskLevel} RISK</span>
+            </div>
+            <div className="case-briefing-main">
+              <div className="case-briefing-number">
+                <small>INCIDENT</small>
+                <strong>#{String(index + 1).padStart(3, '0')}</strong>
+              </div>
+              <div>
+                <h3>{current.incident}</h3>
+                <p>{current.briefing}</p>
+              </div>
+            </div>
+            <div className="case-briefing-source">
+              <span>SOURCE UNDER INVESTIGATION</span>
+              <strong>{current.sender}</strong>
+            </div>
+          </section>
+        )}
+
+          </aside>
+          <section className="investigation-panel message-panel">
+        <div className={mode === 'timed' ? 'arena-sender-card sprint-sender-card' : 'arena-sender-card'}>
+          <div className="arena-chat-avatar" aria-hidden="true">
+            <span className="avatar-hair" />
+            <span className="avatar-face">
+              <i />
+              <i />
+            </span>
+            <span className="avatar-body" />
+          </div>
+          <div className="arena-sender-details">
+            <span>INCOMING MESSAGE</span>
+            <strong>{current.sender}</strong>
+          </div>
+          <span className="arena-sender-dot" aria-label="New message" />
+        </div>
         <h2>{current.title}</h2>
 
-        <div className="arena-message">
-          “{mode === 'redflags' ? renderFlagMessage() : current.message}”
+        <div className="arena-chat">
+          <div className="arena-message-wrap">
+            <div className="arena-message">
+              {mode === 'redflags' ? renderFlagMessage() : current.message}
+            </div>
+            <span className="arena-message-time">MESSAGE PREVIEW · JUST NOW</span>
+          </div>
         </div>
 
+        {mode === 'redflags' && flagSubmitted && (
+          <div className="evidence-legend">
+            <span><i className="legend-genuine" /> Genuine warning sign</span>
+            <span><i className="legend-missed" /> Missed clue</span>
+            <span><i className="legend-decoy" /> Harmless detail selected</span>
+          </div>
+        )}
+
+        </section>
+          <aside className="investigation-panel evidence-panel">
         {mode !== 'redflags' ? (
           <>
-            <div className="arena-question">
-              <Lightbulb size={19} /> What's your call, detective?
+            <div className={mode === 'timed' ? 'arena-question sprint-question' : 'arena-question'}>
+              {mode === 'timed'
+                ? <><Zap size={19} /> QUICK! SCAM OR SAFE?</>
+                : <><Lightbulb size={19} /> What's your call, detective?</>}
             </div>
-            <div className="arena-choices">
+            <div className={mode === 'timed' ? 'arena-choices sprint-choices' : 'arena-choices'}>
               <button disabled={answer !== null} onClick={() => choose('Scam')}>
                 <ShieldAlert size={22} />
-                <strong>It's a scam</strong>
-                <small>Something feels suspicious</small>
+                <strong>SCAM!</strong>
+                <small>Suspicious message</small>
               </button>
               <button disabled={answer !== null} onClick={() => choose('Safe')}>
                 <ShieldCheck size={22} />
-                <strong>Looks safe</strong>
-                <small>No clear scam indicators</small>
+                <strong>SAFE!</strong>
+                <small>No clear warning signs</small>
               </button>
             </div>
 
             {answer !== null && (
-              <div className={`arena-feedback ${answer === current.type ? 'correct' : 'incorrect'}`}>
-                <strong>{answer === current.type ? '✓ Correct call!' : `✕ Not quite — this is ${current.type.toLowerCase()}.`}</strong>
-                <p><b>Clue:</b> {current.clue}</p>
-                <p>{current.explanation}</p>
-                <p><b>What to do:</b> {current.advice}</p>
-                <b><Zap size={14} /> {answer === current.type ? '+20 XP' : '+0 XP'}</b>
+              <div className={`arena-verdict ${answer === current.type ? 'correct' : 'incorrect'}`}>
+                <div className="arena-verdict-heading">
+                  <div className="arena-verdict-icon">
+                    {answer === current.type
+                      ? <CheckCircle2 size={27} />
+                      : <XCircle size={27} />}
+                  </div>
+                  <div>
+                    <span className="arena-verdict-kicker">CASE VERDICT</span>
+                    <strong>{answer === current.type ? 'Brilliant detective work!' : 'Case needs another look!'}</strong>
+                    <small>
+                      {answer === current.type
+                        ? 'You spotted the message correctly.'
+                        : `This message is ${current.type.toLowerCase()}.`}
+                    </small>
+                  </div>
+                  <div className="arena-verdict-xp">
+                    <Zap size={15} />
+                    {answer === current.type ? '+20' : '+0'} XP
+                  </div>
+                </div>
+
+                <div className="arena-verdict-clue">
+                  <span><Lightbulb size={16} /> THE KEY CLUE</span>
+                  <p>{current.clue}</p>
+                </div>
+
+                <div className="arena-verdict-detail">
+                  <strong>Why it matters</strong>
+                  <p>{current.explanation}</p>
+                </div>
+
+                <div className="arena-verdict-advice">
+                  <ShieldCheck size={19} />
+                  <div>
+                    <strong>Detective's takeaway</strong>
+                    <p>{current.advice}</p>
+                  </div>
+                </div>
               </div>
             )}
           </>
         ) : (
           <>
-            <div className="arena-question">
-              <Target size={19} /> Tap every suspicious phrase in the message.
+            <div className="evidence-briefing">
+              <div className="evidence-briefing-icon"><Search size={21} /></div>
+              <div>
+                <span>YOUR OBJECTIVE</span>
+                <strong>Examine the evidence</strong>
+                <p>Tap suspicious details in this message to collect clues. Watch out for misleading details.</p>
+              </div>
             </div>
+
+            <div className="evidence-toolbar">
+              <span><Target size={15} /> EVIDENCE COLLECTION</span>
+              <strong>{selectedFlags.length} CLUES MARKED</strong>
+            </div>
+
+            <div className="evidence-board">
+              <div className="evidence-board-heading">
+                <span>CASE EVIDENCE</span>
+                <small>{current.flags.filter(flag => selectedFlags.includes(flag)).length} / {current.flags.length} genuine clues found</small>
+              </div>
+              {selectedFlags.length > 0 ? (
+                <div className="evidence-collected">
+                  {selectedFlags.map((flag, i) => (
+                    <div className="evidence-chip" key={flag}>
+                      <span>{String(i + 1).padStart(2, '0')}</span>
+                      <strong>{flag}</strong>
+                      {!flagSubmitted && (
+                        <button type="button" onClick={() => toggleFlag(flag)} aria-label={`Remove ${flag}`}>
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="evidence-empty">No evidence collected yet. Inspect the message above and mark suspicious details.</p>
+              )}
+            </div>
+
             <p className="arena-flag-hint">
-              {selectedFlags.length} phrase{selectedFlags.length === 1 ? '' : 's'} selected
-              {current.flags.length === 0 ? ' · This message may have no red flags' : ''}
+              Select every genuine warning sign. Some details may be harmless.
             </p>
 
             {flagSubmitted ? (
               <div className={`arena-feedback ${flagCorrect ? 'correct' : 'incorrect'}`}>
                 <strong>{flagCorrect ? '✓ Excellent detective work!' : '✕ Not quite — review the clues.'}</strong>
                 <p><b>What to look for:</b> {current.clue}</p>
-                {current.flags.filter(flag => !selectedFlags.includes(flag)).length > 0 && (
-                  <p><b>Missed clues:</b> {current.flags.filter(flag => !selectedFlags.includes(flag)).join(', ')}</p>
-                )}
-                {selectedFlags.filter(flag => current.decoys.some(item => item === flag)).length > 0 && (
-                  <p><b>Harmless phrases selected:</b> {selectedFlags.filter(flag => current.decoys.some(item => item === flag)).join(', ')}</p>
-                )}
+
+                <div className="case-verdict-seal">
+                  <div className="case-verdict-seal-icon">
+                    {flagCorrect ? <ShieldCheck size={25} /> : <Search size={25} />}
+                  </div>
+                  <div className="case-verdict-seal-copy">
+                    <span>CLUE DETECTION</span>
+                    <strong>{current.flags.filter(flag => selectedFlags.includes(flag)).length} / {current.flags.length} clues found</strong>
+                    <small>
+                      {current.flags.filter(flag => !selectedFlags.includes(flag)).length} missed
+                      {' · '}
+                      {selectedFlags.filter(flag => !current.flags.includes(flag)).length} false alarms
+                    </small>
+                  </div>
+                  <span className={`case-verdict-stamp ${flagCorrect ? 'perfect' : ''}`}>
+                    {flagCorrect ? 'SOLVED' : 'REVIEW'}
+                  </span>
+                </div>
+
+                <div className="evidence-verdict-list">
+                  <strong>YOUR EVIDENCE REPORT</strong>
+                  {selectedFlags.map(flag => {
+                    const genuine = current.flags.includes(flag)
+                    return (
+                      <div className={`evidence-verdict-item ${genuine ? 'genuine' : 'decoy'}`} key={flag}>
+                        {genuine ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        <span>{flag}</span>
+                        <b>{genuine ? 'GENUINE CLUE' : 'HARMLESS DETAIL'}</b>
+                      </div>
+                    )
+                  })}
+                  {current.flags.filter(flag => !selectedFlags.includes(flag)).map(flag => (
+                    <div className="evidence-verdict-item missed" key={flag}>
+                      <Target size={16} />
+                      <span>{flag}</span>
+                      <b>MISSED CLUE</b>
+                    </div>
+                  ))}
+                  {selectedFlags.length === 0 && current.flags.length === 0 && (
+                    <p className="evidence-perfect-note">No suspicious evidence found — this was a clean message.</p>
+                  )}
+                </div>
+
                 <p>{current.explanation}</p>
                 <p><b>What to do:</b> {current.advice}</p>
                 <b><Zap size={14} /> {flagCorrect ? '+20 XP' : '+0 XP'}</b>
@@ -456,6 +841,9 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
           </>
         )}
 
+          </aside>
+        </div>
+
         <div className="arena-card-footer">
           <span>Score: <b>{mode === 'redflags' ? flagScore : score} / 6</b></span>
           {completed && mode !== 'timed' && (
@@ -466,6 +854,7 @@ function Arena({ onRoundComplete }: { onRoundComplete: (result: { cases: number;
           {completed && mode === 'timed' && (
             <span className="arena-sprint-advance">Next case...</span>
           )}
+        </div>
         </div>
       </article>
 

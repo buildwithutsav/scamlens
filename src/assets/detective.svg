@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440">
+  <defs>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f2c77e"/>
+      <stop offset="1" stop-color="#c58b50"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffd6c5"/>
+      <stop offset="1" stop-color="#edaa9b"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="205" cy="420" rx="145" ry="12" fill="#60403a" opacity=".13"/>
+
+  <!-- Body -->
+  <path d="M142 246 Q91 254 72 310 L52 420 H353 L330 310 Q310 254 252 245Z"
+        fill="url(#coat)" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M165 243 L207 292 L249 243 L278 420 H135Z"
+        fill="#fff8ed" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M164 245 L207 292 L176 347 L132 274Z"
+        fill="#e8b66d" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M250 245 L207 292 L244 347 L282 274Z"
+        fill="#d9a45f" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Neck -->
+  <path d="M168 207 L164 258 Q207 282 248 254 L233 204Z"
+        fill="url(#face)" stroke="#292323" stroke-width="7"/>
+
+  <!-- Ears -->
+  <path d="M125 143 Q102 126 105 155 Q108 179 132 177
+           M289 143 Q312 126 309 155 Q306 179 282 177"
+        fill="#f0aaa0" stroke="#292323" stroke-width="6"/>
+
+  <!-- Face -->
+  <path d="M126 112 Q139 57 207 57 Q276 57 293 112
+           L285 177 Q274 224 210 239 Q146 224 133 177Z"
+        fill="url(#face)" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Hair -->
+  <path d="M128 117 Q108 80 143 57 Q166 39 190 59
+           Q216 34 247 57 Q278 56 296 91 L286 120
+           Q258 96 239 108 Q207 86 180 111 Q151 97 128 117Z"
+        fill="#4b302c" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Detective cap -->
+  <path d="M115 92 Q121 29 204 25 Q279 27 301 91
+           Q257 75 205 79 Q156 76 115 92Z"
+        fill="#d8a65e" stroke="#292323" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M111 91 Q203 66 310 91 Q322 101 304 109
+           Q204 92 115 111 Q99 106 111 91Z"
+        fill="#f1c77e" stroke="#292323" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M165 45 Q204 32 244 46" fill="none"
+        stroke="#f8dfaa" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Eyes and eyebrows -->
+  <path d="M151 145 Q168 133 187 144 M228 144 Q247 133 265 145"
+        fill="none" stroke="#292323" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="171" cy="157" rx="5" ry="7" fill="#292323"/>
+  <ellipse cx="246" cy="157" rx="5" ry="7" fill="#292323"/>
+  <path d="M197 165 Q190 185 204 187" fill="none"
+        stroke="#c47c70" stroke-width="4" stroke-linecap="round"/>
+  <path d="M184 207 Q207 220 230 205" fill="none"
+        stroke="#9c4f50" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Cheek details -->
+  <ellipse cx="151" cy="190" rx="13" ry="7" fill="#e98f91" opacity=".45"/>
+  <ellipse cx="263" cy="190" rx="13" ry="7" fill="#e98f91" opacity=".45"/>
+
+  <!-- Scarf -->
+  <path d="M165 244 Q205 269 251 242 L245 275
+           Q207 297 171 273Z"
+        fill="#d9878c" stroke="#292323" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M232 268 L250 321 L277 298 L260 263Z"
+        fill="#d9878c" stroke="#292323" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Coat buttons -->
+  <circle cx="156" cy="328" r="6" fill="#fff0c9" stroke="#292323" stroke-width="3"/>
+  <circle cx="151" cy="369" r="6" fill="#fff0c9" stroke="#292323" stroke-width="3"/>
+
+  <!-- Magnifying glass handle -->
+  <path d="M271 318 L329 378" stroke="#292323" stroke-width="17" stroke-linecap="round"/>
+  <path d="M271 318 L329 378" stroke="#bd7950" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Magnifying glass -->
+  <circle cx="254" cy="298" r="48" fill="#fff8ed" stroke="#292323" stroke-width="9"/>
+  <circle cx="254" cy="298" r="36" fill="#d9edf0" stroke="#8c7770" stroke-width="4"/>
+  <path d="M236 278 Q251 264 267 278" fill="none"
+        stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="254" cy="298" r="9" fill="#d9878c" opacity=".7"/>
+
+  <!-- Sparkle accents -->
+  <path d="M65 115 L70 130 L85 135 L70 140 L65 155 L60 140 L45 135 L60 130Z"
+        fill="#e5b65f"/>
+  <path d="M343 190 L347 202 L359 206 L347 210 L343 222 L339 210 L327 206 L339 202Z"
+        fill="#d9878c"/>
+</svg>
